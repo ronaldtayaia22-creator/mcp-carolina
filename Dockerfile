@@ -1,19 +1,24 @@
-# Use official Node.js LTS image
-FROM node:18
+# Usar imagen oficial Node.js slim para mejor compatibilidad y menor peso
+FROM node:18-slim
 
-# Create app directory
+# Crear directorio de trabajo dentro del contenedor
 WORKDIR /usr/src/app
 
-# Install app dependencies
+# Copiar archivos de definición de dependencias
 COPY package*.json ./
+
+# Actualizar npm a la última versión estable y luego instalar dependencias
+RUN npm install -g npm@latest
 RUN npm install
 
-# Bundle app source
+# Copiar todo el código fuente al contenedor
 COPY . .
 
-# App binds to port defined by Cloud Run
+# Definir variable de entorno para el puerto en el que corre la app
 ENV PORT=8080
+
+# Exponer el puerto para el servicio
 EXPOSE 8080
 
-# Start the app
+# Comando para iniciar la aplicación
 CMD [ "node", "index.js" ]
